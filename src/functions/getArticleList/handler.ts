@@ -8,10 +8,13 @@ import schema from './schema';
 const getArticleList: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   const databaseService = new DatabaseService();
   await databaseService.create({TableName: "articles", Item: { "id": "a lovely value"}});
-  await databaseService.getItem({key: "a lovely value", tableName: "articles"});
+  await databaseService.create({TableName: "articles", Item: { "id": "an even lovelier one"}});
+  await databaseService.create({TableName: "articles", Item: { "id": "the loveliest one"}});
+
+  const articles = await databaseService.getAll("articles");
 
   return formatJSONResponse({
-    body: "blah",
+    body: articles,
     event,
   });
 };

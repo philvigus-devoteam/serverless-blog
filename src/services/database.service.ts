@@ -1,4 +1,5 @@
 import * as AWS from 'aws-sdk';
+import { AttributeValue, DynamoDB, ScanCommandInput, ScanCommandOutput, ScanCommand } from "@aws-sdk/client-dynamodb";
 
 // Models
 import ResponseModel from '../models/response.model';
@@ -103,7 +104,7 @@ export default class DatabaseService {
         if (Object.keys(results).length) {
             return results;
         }
-        
+
         console.error('Item does not exist');
         throw new ResponseModel({ id: key }, StatusCode.BAD_REQUEST, ResponseMessage.INVALID_REQUEST)
     }
@@ -112,7 +113,7 @@ export default class DatabaseService {
         try {
             console.log('DB CREATE - params.TableName: ', params.TableName);
             console.log('DB CREATE - params.Item: ', params.Item);
-
+            
             return await documentClient.put(params).promise();
         } catch (error) {
             console.error(`create-error: ${error}`);
@@ -168,6 +169,20 @@ export default class DatabaseService {
         } catch (error) {
             console.error(`delete-error: ${error}`);
             throw new ResponseModel({}, 500, `delete-error: ${error}`);
+        }
+    }
+    
+    getAll = async (tableName: string) => {
+        console.log('DB GETALL - TableName: ', tableName);
+
+        const params: ScanCommandInput = {
+            TableName: tableName
+        };
+
+        try {
+            return await documentClient.scan(params).promise();
+        } catch (err) {
+            console.log(err);
         }
     }
 }
