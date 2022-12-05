@@ -57,11 +57,11 @@ export default class ResponseModel {
         this.body.data = data;
     }
 
-    setCode = (code: number): void => {
+    setCode = (code: StatusCode): void => {
         this.code = code;
     }
 
-    getCode = (): number => {
+    getCode = (): StatusCode => {
         return this.code;
     }
 

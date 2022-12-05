@@ -1,5 +1,4 @@
 import * as AWS from 'aws-sdk';
-import { AttributeValue, DynamoDB, ScanCommandInput, ScanCommandOutput, ScanCommand } from "@aws-sdk/client-dynamodb";
 
 // Models
 import ResponseModel from '../models/response.model';
