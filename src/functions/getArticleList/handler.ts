@@ -11,7 +11,7 @@ const getArticleList: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async 
   await databaseService.create({TableName: "articles", Item: { "id": "an even lovelier one"}});
   await databaseService.create({TableName: "articles", Item: { "id": "the loveliest one"}});
 
-  const articles = await databaseService.getAll("articles");
+  const articles = await databaseService.getAll({TableName: "articles"});
 
   return formatJSONResponse({
     body: articles,

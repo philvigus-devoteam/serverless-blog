@@ -63,6 +63,10 @@ type GetItemOutput = AWS.DynamoDB.DocumentClient.GetItemOutput;
 type DeleteItem = AWS.DynamoDB.DocumentClient.DeleteItemInput;
 type DeleteItemOutput = AWS.DynamoDB.DocumentClient.DeleteItemOutput;
 
+// Scan
+type ScanInput = AWS.DynamoDB.DocumentClient.ScanInput;
+type ScanOutput = AWS.DynamoDB.DocumentClient.ScanOutput;
+
 type Item = {[index: string]: string};
 
 // const {
@@ -87,7 +91,7 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
 
 export default class DatabaseService {
 
-    getItem = async ({ key, hash, hashValue, tableName}: Item) => {
+    getItem = async ({ key, hash, hashValue, tableName}: Item): Promise<GetItemOutput> => {
         const params = {
             TableName: tableName,
             Key: {
@@ -172,12 +176,8 @@ export default class DatabaseService {
         }
     }
     
-    getAll = async (tableName: string) => {
-        console.log('DB GETALL - TableName: ', tableName);
-
-        const params: ScanCommandInput = {
-            TableName: tableName
-        };
+    getAll = async (params: ScanInput): Promise<ScanOutput> => {
+        console.log('DB GETALL - TableName: ', params.TableName);
 
         try {
             return await documentClient.scan(params).promise();
