@@ -12,6 +12,7 @@
   "dependencies": {
     "@middy/core": "^3.4.0",
     "@middy/http-json-body-parser": "^3.4.0",
+    "serverless-dynamodb-client": "^0.0.2",
     "serverless-dynamodb-local": "^0.2.40",
     "serverless-offline": "^12.0.0"
   },
