@@ -2,14 +2,16 @@ import type { AWS } from '@serverless/typescript';
 
 import hello from '@functions/hello';
 import getArticleList from '@functions/getArticleList';
+import dynamoDbTables from './src/resources/dynamodb-tables';
 
 const serverlessConfiguration: AWS = {
   service: 'blog',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild', 'serverless-offline'],
+  plugins: ['serverless-esbuild', 'serverless-offline', 'serverless-dynamodb-local'],
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
+    region: 'eu-west-1',
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
@@ -33,7 +35,24 @@ const serverlessConfiguration: AWS = {
       platform: 'node',
       concurrency: 10,
     },
+    dynamodb: {
+      stages: ['dev'],
+      start: {
+        port: 8008,
+        inMemory: true,
+        heapInitial: '200m',
+        heapMax: '1g',
+        migrate: true,
+        seed: true,
+        convertEmptyValues: true,
+        // Uncomment only if you already have a DynamoDB running locally
+        // noStart: true
+      }
+    },
   },
+  resources: {
+    Resources: dynamoDbTables
+  }
 };
 
 module.exports = serverlessConfiguration;
