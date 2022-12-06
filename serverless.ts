@@ -23,6 +23,28 @@ const serverlessConfiguration: AWS = {
       STAGE: '${sls:stage}',
       LOCAL_END_POINT: 'http://localhost:8008'
     },
+    iam: {
+      role: {
+        name: 'lambda-dynamodb-access',
+        statements: [
+          {
+            Effect: 'Allow',
+            Action: [
+              'dynamodb:DescribeTable',
+              'dynamodb:Query',
+              'dynamodb:Scan',
+              'dynamodb:GetItem',
+              'dynamodb:PutItem',
+              'dynamodb:UpdateItem',
+              'dynamodb:DeleteItem'
+            ],
+            Resource: [
+              {"Fn::GetAtt": [ 'ArticleTable', 'Arn' ]},
+            ]
+          }
+        ]
+      }
+    }
   },
   // import the function via paths
   functions: { hello, getArticleList },
