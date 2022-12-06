@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 
 // Models
-import ResponseModel from '../models/response.model';
+import ResponseModel from '../models/response/response.model';
 
 interface IConfig {
     region: string;

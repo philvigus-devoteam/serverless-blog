@@ -1,22 +1,31 @@
-import ResponseModel from "../../../src/models/response.model";
+import ResponseModel, {STATUS_MESSAGES} from "../../../src/models/response/response.model";
+import {StatusCode} from "../../../src/models/response/status";
 
 describe("Response model", () => {
     describe("build()", () => {
         it("should return the response with the correct parameters", () => {
+            const dataValue = 25.23344;
+            const status = StatusCode.OK;
+            const message = "test message";
+
+            const firstKey = "first key";
+            const secondKey = "second key";
+            const firstValue = "first value";
+            const secondValue = "second value";
+            
             const response = new ResponseModel();
 
-            response.setBodyVariable("first key", "first value");
-            response.setBodyVariable("second key", "second value");
+            response.setBodyVariable(firstKey, firstValue);
+            response.setBodyVariable(secondKey, secondValue);
 
-            response.setData(25.233344);
-
-            response.setCode(200);
-            response.setMessage("test message");
+            response.setData(dataValue);
+            response.setCode(status);
+            response.setMessage(message);
 
             const builtResponse = response.build();
 
-            expect(builtResponse.statusCode).toBe(200);
-            expect(builtResponse.body).toBe('{"data":25.233344,"message":"test message","status":"bad request","first key":"first value","second key":"second value"}');
+            expect(builtResponse.statusCode).toBe(status);
+            expect(builtResponse.body).toBe(`{"data":${dataValue},"message":"${message}","status":"${STATUS_MESSAGES[status]}","${firstKey}":"${firstValue}","${secondKey}":"${secondValue}"}`);
         });
     });
 });

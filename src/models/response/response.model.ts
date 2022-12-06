@@ -1,34 +1,7 @@
-type ResponseHeader = { [header: string]: string | number | boolean; }
-
-interface IResponseBody {
-    data: any;
-    message: string;
-    status?: string;
-}
-
-interface IResponse {
-    statusCode: number;
-    headers: ResponseHeader;
-    body: string;
-}
-
-enum Status {
-    SUCCESS = 'success',
-    ERROR = 'error',
-    BAD_REQUEST = 'bad request',
-}
-
-enum StatusCode {
-    OK = 200,
-    ERROR = 500,
-    BAD_REQUEST = 400,
-}
-
-const RESPONSE_HEADERS: ResponseHeader = {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*', // Required for CORS support to work
-    'Access-Control-Allow-Credentials': true, // Required for cookies, authorization headers with HTTPS
-};
+import {Status, StatusCode} from "./status";
+import ResponseInterface from "./response.interface";
+import ResponseBodyInterface from "./responseBody.interface";
+import {ResponseHeader as ResponseHeaderType} from "./responseHeader.type";
 
 export const STATUS_MESSAGES = {
     [StatusCode.OK]: Status.SUCCESS,
@@ -36,8 +9,14 @@ export const STATUS_MESSAGES = {
     [StatusCode.ERROR]: Status.ERROR,
 }
 
+const RESPONSE_HEADERS: ResponseHeaderType = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*', // Required for CORS support to work
+    'Access-Control-Allow-Credentials': true, // Required for cookies, authorization headers with HTTPS
+};
+
 export default class ResponseModel {
-    private body: IResponseBody;
+    private body: ResponseBodyInterface;
     private code: number;
 
     constructor(data = {}, code = StatusCode.BAD_REQUEST, message = '') {
@@ -58,6 +37,7 @@ export default class ResponseModel {
     }
 
     setCode = (code: StatusCode): void => {
+        this.body.status = STATUS_MESSAGES[code];
         this.code = code;
     }
 
@@ -73,7 +53,7 @@ export default class ResponseModel {
         return this.body.message;
     }
 
-    build = (): IResponse => {
+    build = (): ResponseInterface => {
         return {
             statusCode: this.code,
             headers: RESPONSE_HEADERS,
