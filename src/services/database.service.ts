@@ -17,24 +17,8 @@ enum StatusCode {
 }
 
 enum ResponseMessage {
-    CREATE_LIST_SUCCESS = 'To-do list successfully created',
-    CREATE_LIST_FAIL = 'To-do list cannot be created',
-    DELETE_LIST_SUCCESS = 'To-do list successfully deleted',
-    DELETE_LIST_FAIL = 'To-do list cannot be deleted',
-    GET_LIST_SUCCESS = 'To-do list successfully retrieved',
-    GET_LIST_FAIL = 'To-do list not found',
-    UPDATE_LIST_SUCCESS = 'To-do list successfully updated',
-    UPDATE_LIST_FAIL = 'To-do list cannot be updated',
-    CREATE_TASK_SUCCESS = 'Task successfully added',
-    CREATE_TASK_FAIL = 'Task could not be added',
-    DELETE_TASK_SUCCESS = 'Task successfully deleted',
-    DELETE_TASK_FAIL = 'Task could not be deleted',
-    UPDATE_TASK_SUCCESS = 'Task successfully updated',
-    UPDATE_TASK_FAIL = 'Task could not be updated',
-    GET_TASK_SUCCESS = 'Task successfully retrieved',
-    GET_TASK_FAIL = 'Task not found',
-    ERROR = 'Unknown error.',
-    INVALID_REQUEST = 'Invalid Request!',
+    ERROR = 'Unknown error',
+    INVALID_REQUEST = 'Invalid Request',
     GET_ITEM_ERROR = 'Item does not exist',
 }
 
@@ -68,28 +52,21 @@ type ScanOutput = AWS.DynamoDB.DocumentClient.ScanOutput;
 
 type Item = {[index: string]: string};
 
-// const {
-//     STAGE,
-//     DYNAMODB_LOCAL_STAGE,
-//     DYNAMODB_LOCAL_ACCESS_KEY_ID,
-//     DYNAMODB_LOCAL_SECRET_ACCESS_KEY,
-//     DYNAMODB_LOCAL_ENDPOINT
-// } = process.env;
+const config: IConfig = { region: "eu-west-1" };
 
-const config: IConfig = { region: "eu-west-1", accessKeyId: "blah", secretAccessKey: "blah", endpoint: "http://localhost:8008" };
-
-// if (STAGE === DYNAMODB_LOCAL_STAGE) {
-//     config.accessKeyId = DYNAMODB_LOCAL_ACCESS_KEY_ID; // local dynamodb accessKeyId
-//     config.secretAccessKey = DYNAMODB_LOCAL_SECRET_ACCESS_KEY; // local dynamodb secretAccessKey
-//     config.endpoint = DYNAMODB_LOCAL_ENDPOINT; // local dynamodb endpoint
-// }
+// For local dev, the only value here that is used is the endpoint
+// However, the others need to be set or else an error is thrown
+if (process.env.STAGE === 'dev') {
+    config.accessKeyId = "blah"; 
+    config.secretAccessKey = "uber-blah";
+    config.endpoint = "http://localhost:8008";
+}
 
 AWS.config.update(config);
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
 export default class DatabaseService {
-
     getItem = async ({ key, hash, hashValue, tableName}: Item): Promise<GetItemOutput> => {
         const params = {
             TableName: tableName,
@@ -125,6 +102,8 @@ export default class DatabaseService {
     }
 
     batchCreate = async(params: BatchWrite): Promise<BatchWriteOutPut> => {
+        console.log('DB CREATE - params.RequestItems: ', params.RequestItems);
+
         try {
             return await documentClient.batchWrite(params).promise();
         } catch (error) {
@@ -134,8 +113,11 @@ export default class DatabaseService {
     }
 
     update = async (params: UpdateItem): Promise<UpdateItemOutPut> => {
+        console.log('DB UPDATE - params.TableName: ', params.TableName);
+        console.log('DB UPDATE - params.Key: ', params.Key);
+        console.log('DB UPDATE - params.AttributeUpdates: ', params.AttributeUpdates);
+
         try {
-            // result.Attributes
             return await documentClient.update(params).promise();
         } catch (error) {
             console.error(`update-error: ${error}`);
@@ -144,6 +126,9 @@ export default class DatabaseService {
     }
 
     query = async (params: QueryItem): Promise<QueryItemOutput> => {
+        console.log('DB QUERY - params.TableName: ', params.TableName);
+        console.log('DB QUERY - params.AttributesToGet: ', params.AttributesToGet);
+
         try {
             return await documentClient.query(params).promise();
         } catch (error) {
@@ -153,7 +138,6 @@ export default class DatabaseService {
     }
 
     get = async (params: GetItem): Promise<GetItemOutput> => {
-        // console.log('DB GET - STAGE: ', STAGE);
         console.log('DB GET - params.TableName: ', params.TableName);
         console.log('DB GET - params.Key: ', params.Key);
 
@@ -167,6 +151,9 @@ export default class DatabaseService {
     }
 
     delete = async (params: DeleteItem): Promise<DeleteItemOutput> => {
+        console.log('DB DELETE - TableName: ', params.TableName);
+        console.log('DB DELETE - Key: ', params.Key);
+
         try {
             return await documentClient.delete(params).promise();
         } catch (error) {

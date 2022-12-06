@@ -6,6 +6,7 @@ import dynamoDbTables from './src/resources/dynamodb-tables';
 
 const serverlessConfiguration: AWS = {
   service: 'blog',
+  useDotenv: true,
   frameworkVersion: '3',
   plugins: ['serverless-esbuild', 'serverless-offline', 'serverless-dynamodb-local'],
   provider: {
@@ -19,6 +20,7 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      STAGE: '${sls:stage}'
     },
   },
   // import the function via paths
