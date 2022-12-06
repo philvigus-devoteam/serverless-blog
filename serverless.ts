@@ -20,7 +20,8 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      STAGE: '${sls:stage}'
+      STAGE: '${sls:stage}',
+      LOCAL_END_POINT: 'http://localhost:8008'
     },
   },
   // import the function via paths

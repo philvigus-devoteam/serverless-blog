@@ -59,7 +59,7 @@ const config: IConfig = { region: "eu-west-1" };
 if (process.env.STAGE === 'dev') {
     config.accessKeyId = "blah"; 
     config.secretAccessKey = "uber-blah";
-    config.endpoint = "http://localhost:8008";
+    config.endpoint = process.env.LOCAL_END_POINT;
 }
 
 AWS.config.update(config);
