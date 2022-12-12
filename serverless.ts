@@ -3,6 +3,7 @@ import type { AWS } from '@serverless/typescript';
 import hello from '@functions/hello';
 import getArticleList from '@functions/getArticleList';
 import createArticle from '@functions/createArticle';
+import getArticle from '@functions/getArticle';
 import dynamoDbTables from './src/resources/dynamodb-tables';
 
 const serverlessConfiguration: AWS = {
@@ -48,7 +49,7 @@ const serverlessConfiguration: AWS = {
     }
   },
   // import the function via paths
-  functions: { hello, getArticleList, createArticle },
+  functions: { hello, getArticleList, createArticle, getArticle },
   package: { individually: true },
   custom: {
     esbuild: {
