@@ -15,7 +15,7 @@ const createArticle: Handler = async (event) => {
   });
 
   return formatJSONResponse({
-    body: body,
+    body,
     event,
   });
 };
