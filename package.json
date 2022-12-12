@@ -7,7 +7,6 @@
     "test": "jest",
     "lambdas:offline": "sls offline --noPrependStageInUrl",
     "dynamodb:offline": "sls dynamodb start"
-    "
   },
   "engines": {
     "node": ">=14.15.0"

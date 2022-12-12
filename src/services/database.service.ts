@@ -1,7 +1,7 @@
-import * as AWS from 'aws-sdk';
+import * as AWS from "aws-sdk";
 
 // Models
-import ResponseModel from '../models/response/response.model';
+import ResponseModel from "../models/response/response.model";
 
 interface IConfig {
     region: string;
@@ -17,9 +17,9 @@ enum StatusCode {
 }
 
 enum ResponseMessage {
-    ERROR = 'Unknown error',
-    INVALID_REQUEST = 'Invalid Request',
-    GET_ITEM_ERROR = 'Item does not exist',
+    ERROR = "Unknown error",
+    INVALID_REQUEST = "Invalid Request",
+    GET_ITEM_ERROR = "Item does not exist",
 }
 
 // Put
@@ -56,7 +56,7 @@ const config: IConfig = { region: "eu-west-1" };
 
 // For local dev, the only value here that is used is the endpoint
 // However, the others need to be set or else an error is thrown
-if (process.env.STAGE === 'dev') {
+if (process.env.STAGE === "dev") {
     config.accessKeyId = "blah"; 
     config.secretAccessKey = "uber-blah";
     config.endpoint = process.env.LOCAL_END_POINT;
@@ -85,14 +85,14 @@ export default class DatabaseService {
             return results;
         }
 
-        console.error('Item does not exist');
+        console.error("Item does not exist");
         throw new ResponseModel({ id: key }, StatusCode.BAD_REQUEST, ResponseMessage.INVALID_REQUEST)
     }
 
     create = async(params: PutItem): Promise<PutItemOutput> => {
         try {
-            console.log('DB CREATE - params.TableName: ', params.TableName);
-            console.log('DB CREATE - params.Item: ', params.Item);
+            console.log("DB CREATE - params.TableName: ", params.TableName);
+            console.log("DB CREATE - params.Item: ", params.Item);
             
             return await documentClient.put(params).promise();
         } catch (error) {
@@ -102,7 +102,7 @@ export default class DatabaseService {
     }
 
     batchCreate = async(params: BatchWrite): Promise<BatchWriteOutPut> => {
-        console.log('DB CREATE - params.RequestItems: ', params.RequestItems);
+        console.log("DB CREATE - params.RequestItems: ", params.RequestItems);
 
         try {
             return await documentClient.batchWrite(params).promise();
@@ -113,9 +113,9 @@ export default class DatabaseService {
     }
 
     update = async (params: UpdateItem): Promise<UpdateItemOutPut> => {
-        console.log('DB UPDATE - params.TableName: ', params.TableName);
-        console.log('DB UPDATE - params.Key: ', params.Key);
-        console.log('DB UPDATE - params.AttributeUpdates: ', params.AttributeUpdates);
+        console.log("DB UPDATE - params.TableName: ", params.TableName);
+        console.log("DB UPDATE - params.Key: ", params.Key);
+        console.log("DB UPDATE - params.AttributeUpdates: ", params.AttributeUpdates);
 
         try {
             return await documentClient.update(params).promise();
@@ -126,8 +126,8 @@ export default class DatabaseService {
     }
 
     query = async (params: QueryItem): Promise<QueryItemOutput> => {
-        console.log('DB QUERY - params.TableName: ', params.TableName);
-        console.log('DB QUERY - params.AttributesToGet: ', params.AttributesToGet);
+        console.log("DB QUERY - params.TableName: ", params.TableName);
+        console.log("DB QUERY - params.AttributesToGet: ", params.AttributesToGet);
 
         try {
             return await documentClient.query(params).promise();
@@ -138,8 +138,8 @@ export default class DatabaseService {
     }
 
     get = async (params: GetItem): Promise<GetItemOutput> => {
-        console.log('DB GET - params.TableName: ', params.TableName);
-        console.log('DB GET - params.Key: ', params.Key);
+        console.log("DB GET - params.TableName: ", params.TableName);
+        console.log("DB GET - params.Key: ", params.Key);
 
         try {
             return await documentClient.get(params).promise();
@@ -151,8 +151,8 @@ export default class DatabaseService {
     }
 
     delete = async (params: DeleteItem): Promise<DeleteItemOutput> => {
-        console.log('DB DELETE - TableName: ', params.TableName);
-        console.log('DB DELETE - Key: ', params.Key);
+        console.log("DB DELETE - TableName: ", params.TableName);
+        console.log("DB DELETE - Key: ", params.Key);
 
         try {
             return await documentClient.delete(params).promise();
@@ -163,7 +163,7 @@ export default class DatabaseService {
     }
     
     getAll = async (params: ScanInput): Promise<ScanOutput> => {
-        console.log('DB GETALL - TableName: ', params.TableName);
+        console.log("DB GETALL - TableName: ", params.TableName);
 
         try {
             return await documentClient.scan(params).promise();

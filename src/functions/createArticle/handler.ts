@@ -1,10 +1,9 @@
-import { formatJSONResponse } from '@libs/api-gateway';
-import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
-import DatabaseService from 'src/services/database.service';
-import { v4 as uuid } from 'uuid';
-import { middyfy } from '@libs/lambda';
+import type { ValidatedEventAPIGatewayProxyEvent } from "@libs/api-gateway";
+import DatabaseService from "src/services/database.service";
+import { v4 as uuid } from "uuid";
+import { middyfy } from "@libs/lambda";
 
-import schema from './schema';
+import schema from "./schema";
 
 const createArticle: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   const databaseService = new DatabaseService();
@@ -16,10 +15,10 @@ const createArticle: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
     Item: body
   });
 
-  return formatJSONResponse({
+  return {
     body,
     event,
-  });
+  };
 };
 
 export const main = middyfy(createArticle);
