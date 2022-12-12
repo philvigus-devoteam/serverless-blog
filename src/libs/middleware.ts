@@ -1,14 +1,16 @@
 
 import middy from "@middy/core";
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda";
 
 import { formatJSONResponse } from "./api-gateway";
 import { AppError } from "./app-error";
 import MiddlewareFunction = middy.MiddlewareFn;
 
+type MiddlewareOutput = Promise<middy.Request<APIGatewayProxyEvent, any, Error, Context>>;
+
 export const apiGatewayResponseMiddleware = (options: { enableErrorLogger?: boolean } = {}) => {
   // This runs before the lambda handler
-  const after: MiddlewareFunction<APIGatewayProxyEvent, any> = async (request) => {
+  const after: MiddlewareFunction<APIGatewayProxyEvent, any> = async (request): MiddlewareOutput => {
     if (isInvalidRequest(request)) {
         return;
     }
@@ -21,7 +23,7 @@ export const apiGatewayResponseMiddleware = (options: { enableErrorLogger?: bool
   }
 
 // This runs if the lambda errors
-  const onError: MiddlewareFunction<APIGatewayProxyEvent, APIGatewayProxyResult> = async (request) => {
+  const onError: MiddlewareFunction<APIGatewayProxyEvent, APIGatewayProxyResult> = async (request): Promise<void> => {
     const { error } = request;
     let statusCode = 500;
 
@@ -42,13 +44,13 @@ export const apiGatewayResponseMiddleware = (options: { enableErrorLogger?: bool
   };
 }
 
-const isInvalidRequest = (request) => {
+const isInvalidRequest = (request): boolean => {
     return !request.event?.httpMethod
       || request.response === undefined
       || request.response === null;
 }
 
-const isHttpResponse = (response) => {
+const isHttpResponse = (response): boolean => {
     const existingKeys = Object.keys(response);
 
     return existingKeys.includes("statusCode")
