@@ -2,8 +2,6 @@ import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
 import { formatJSONResponse } from '@libs/api-gateway';
 import DatabaseService from 'src/services/database.service';
 
-import schema from './schema';
-
 const getArticleList: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   console.log('here');
   const databaseService = new DatabaseService();
