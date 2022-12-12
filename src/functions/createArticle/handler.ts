@@ -1,13 +1,15 @@
 import { formatJSONResponse } from '@libs/api-gateway';
-import { Handler } from 'aws-lambda';
+import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
 import DatabaseService from 'src/services/database.service';
 import { v4 as uuid } from 'uuid';
+import { middyfy } from '@libs/lambda';
 
+import schema from './schema';
 
-const createArticle: Handler = async (event) => {
+const createArticle: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   const databaseService = new DatabaseService();
 
-  const body = { id: uuid(), ...JSON.parse(event.body) };
+  const body = { id: uuid(), ...event.body };
 
   await databaseService.create({
     TableName: "articles",
@@ -20,4 +22,4 @@ const createArticle: Handler = async (event) => {
   });
 };
 
-export const main = createArticle;
+export const main = middyfy(createArticle);
