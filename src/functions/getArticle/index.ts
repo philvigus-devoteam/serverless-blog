@@ -12,8 +12,10 @@ export default {
           schemas: {
             "application/json": schema,
           },
-          paths: {
-            id: true,
+          parameters: {
+            paths: {
+              id: true,
+            },
           },
         },
       },
