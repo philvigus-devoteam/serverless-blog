@@ -13,8 +13,8 @@ export default {
             "application/json": schema,
           },
           paths: {
-            id: true
-          }
+            id: true,
+          },
         },
       },
     },
