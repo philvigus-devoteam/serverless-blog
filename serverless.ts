@@ -4,6 +4,7 @@ import getArticleList from "@functions/getArticleList";
 import createArticle from "@functions/createArticle";
 import getArticle from "@functions/getArticle";
 import deleteArticle from "@functions/deleteArticle";
+import updateArticle from "@functions/updateArticle";
 import dynamoDbTables from "./src/resources/dynamodb-tables";
 
 const serverlessConfiguration: AWS = {
@@ -50,8 +51,13 @@ const serverlessConfiguration: AWS = {
       },
     },
   },
-  // import the function via paths
-  functions: { getArticleList, createArticle, getArticle, deleteArticle },
+  functions: {
+    getArticleList,
+    createArticle,
+    getArticle,
+    deleteArticle,
+    updateArticle,
+  },
   package: { individually: true },
   custom: {
     esbuild: {
