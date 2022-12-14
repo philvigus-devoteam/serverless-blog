@@ -1,8 +1,15 @@
-export class AppError extends Error {
-    statusCode: number;
+import { StatusCode } from "../../src/models/response/status";
 
-    constructor(message: string = "", statusCode: number = 400) {
-        super(message);
-        this.statusCode = statusCode;
-    }
+export const DEFAULT_STATUS_CODE = StatusCode.BAD_REQUEST;
+
+export default class AppError extends Error {
+  statusCode: StatusCode;
+
+  constructor(
+    message: string = "",
+    statusCode: StatusCode = DEFAULT_STATUS_CODE
+  ) {
+    super(message);
+    this.statusCode = statusCode;
+  }
 }
