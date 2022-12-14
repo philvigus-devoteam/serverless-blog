@@ -1,29 +1,41 @@
-
 import middy from "@middy/core";
-import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda";
+import {
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+  Context,
+} from "aws-lambda";
 
-import { formatJSONResponse } from "./api-gateway";
+import { formatJsonResponse } from "./api-gateway";
 import { AppError } from "./app-error";
 import MiddlewareFunction = middy.MiddlewareFn;
 
-type MiddlewareOutput = Promise<middy.Request<APIGatewayProxyEvent, any, Error, Context>>;
+type MiddlewareOutput = Promise<
+  middy.Request<APIGatewayProxyEvent, any, Error, Context>
+>;
 
-export const apiGatewayResponseMiddleware = (options: { enableErrorLogger?: boolean } = {}) => {
+export const apiGatewayResponseMiddleware = (
+  options: { enableErrorLogger?: boolean } = {}
+) => {
   // This runs before the lambda handler
-  const after: MiddlewareFunction<APIGatewayProxyEvent, any> = async (request): MiddlewareOutput => {
+  const after: MiddlewareFunction<APIGatewayProxyEvent, any> = async (
+    request
+  ): MiddlewareOutput => {
     if (isInvalidRequest(request)) {
-        return;
+      return;
     }
 
     if (isHttpResponse(request.response)) {
-        return;
+      return;
     }
 
-    request.response = formatJSONResponse(request.response);
-  }
+    request.response = formatJsonResponse(request.response);
+  };
 
-// This runs if the lambda errors
-  const onError: MiddlewareFunction<APIGatewayProxyEvent, APIGatewayProxyResult> = async (request): Promise<void> => {
+  // This runs if the lambda errors
+  const onError: MiddlewareFunction<
+    APIGatewayProxyEvent,
+    APIGatewayProxyResult
+  > = async (request): Promise<void> => {
     const { error } = request;
     let statusCode = 500;
 
@@ -35,25 +47,32 @@ export const apiGatewayResponseMiddleware = (options: { enableErrorLogger?: bool
       console.error(error);
     }
 
-    request.response = formatJSONResponse({ message: error.message }, statusCode);
-  }
+    request.response = formatJsonResponse(
+      { message: error.message },
+      statusCode
+    );
+  };
 
   return {
     after,
     onError,
   };
-}
+};
 
 const isInvalidRequest = (request): boolean => {
-    return !request.event?.httpMethod
-      || request.response === undefined
-      || request.response === null;
-}
+  return (
+    !request.event?.httpMethod ||
+    request.response === undefined ||
+    request.response === null
+  );
+};
 
 const isHttpResponse = (response): boolean => {
-    const existingKeys = Object.keys(response);
+  const existingKeys = Object.keys(response);
 
-    return existingKeys.includes("statusCode")
-      && existingKeys.includes("headers")
-      && existingKeys.includes("body");
-}
+  return (
+    existingKeys.includes("statusCode") &&
+    existingKeys.includes("headers") &&
+    existingKeys.includes("body")
+  );
+};
