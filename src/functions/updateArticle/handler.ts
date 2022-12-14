@@ -1,6 +1,7 @@
 import type { ValidatedEventAPIGatewayProxyEvent } from "@libs/api-gateway";
 import DatabaseService from "src/services/database.service";
 import { middyfy } from "@libs/lambda";
+import { ARTICLES_TABLE_NAME } from "src/resources/dynamodb-tables";
 
 import schema from "./schema";
 
@@ -10,7 +11,7 @@ const updateArticle: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   const databaseService = new DatabaseService();
 
   await databaseService.update({
-    TableName: "articles",
+    TableName: ARTICLES_TABLE_NAME,
     Key: { id: event.pathParameters.id },
     UpdateExpression: "set title = :t, author = :a, content = :c",
     ExpressionAttributeValues: {
